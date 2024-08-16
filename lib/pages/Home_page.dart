@@ -1,100 +1,296 @@
+// ignore_for_file: unused_element, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
+class HomePage extends StatefulWidget {
+  const HomePage({super.key, required this.title});
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+  String? selectedLocation;
+  String? selectedProperty;
+  String? selectedRoom;
+  List<String> listLocation = ["Kathmandu", "Lalitpur", "Bhaktapur", "Others"];
+  List<String> listProperty = ["Residential", "Commercial", "Room for rent"];
+  List<String> listRoom = ["Private Room", "Partition Room", "Bed Space"];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Ensure layout is complete before performing actions
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
+      backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(10.0),
+            bottomRight: Radius.circular(10.0),
+          ),
+          child: AppBar(
+            backgroundColor: const Color(0xFF004225),
+            title: Container(
+              height: 40,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                color: const Color(0xFF6C8D7F),
+              ),
+              child: TextField(
+                style: const TextStyle(color: Color(0xFFFFFFFF)),
+                decoration: InputDecoration(
+                  hintText: 'Search',
+                  hintStyle: const TextStyle(color: Colors.white),
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    color: Colors.white,
+                    size: 23,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: const Icon(
+                      Icons.filter_list,
+                      color: Color(0xFFFFFFFF),
+                    ),
+                    onPressed: () {},
+                  ),
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 9.0),
+                ),
+              ),
+            ),
+            actions: const [
+              Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Icon(
+                  Icons.notifications,
+                  color: Color(0xFFFFFFFF),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              // Image with Verified container
-              Stack(
-                children: [
-                  Image.asset(
-                    'lib/images/Room.png',
-                    width: 160,
-                    height: 160,
-                    fit: BoxFit.cover,
-                  ),
-                  const Positioned(
-                    top: 8,
-                    left: 8,
-                    child: VerifiedContainer(),
-                  ),
-                ],
-              ),
-
-              const SizedBox(width: 15),
-
-              // Villa details and feature chips
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Villa title and favorite icon
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Villa',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Icon(Icons.favorite_border),
-                      ],
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 3, vertical: 8),
+                  child: Container(
+                    height: 35,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF004225),
+                      borderRadius: BorderRadius.circular(5),
                     ),
-
-                    // Villa price
-                    const Text(
-                      'Rs.6999 Monthly',
-                      style: TextStyle(
-                        fontSize: 16,
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        padding: const EdgeInsets.all(5),
+                        hint: const Text(
+                          "Location",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        dropdownColor: Colors.grey,
+                        icon: const Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.white,
+                        ),
+                        iconSize: 20,
+                        isExpanded: true,
+                        value: selectedLocation,
+                        onChanged: (newValue) {
+                          setState(() {
+                            selectedLocation = newValue;
+                          });
+                        },
+                        items: listLocation.map((valueItem) {
+                          return DropdownMenuItem(
+                            value: valueItem,
+                            child: Text(
+                              valueItem,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          );
+                        }).toList(),
                       ),
                     ),
-
-                    const SizedBox(height: 8),
-
-                    // Feature chips
-                    Wrap(
-                      spacing: 5,
-                      runSpacing: 5,
-                      children: [
-                        _buildFeatureChip('Fully Furnished'),
-                        _buildFeatureChip('Washing Machine'),
-                        _buildFeatureChip('Internet/Wifi'),
-                        _buildFeatureChip('Attached Bathroom'),
-                        _buildFeatureChip('Near Mall/Supermarket'),
-                      ],
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    // Location
-                    const Row(
-                      children: [
-                        Icon(Icons.location_on),
-                        SizedBox(width: 8),
-                        Text('Location'),
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 3, vertical: 8),
+                  child: Container(
+                    height: 35,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF004225),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        padding: const EdgeInsets.all(5),
+                        hint: const Text(
+                          "Property Type",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        dropdownColor: Colors.grey,
+                        icon: const Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.white,
+                        ),
+                        iconSize: 20,
+                        isExpanded: true,
+                        value: selectedProperty,
+                        onChanged: (newValue) {
+                          setState(() {
+                            selectedProperty = newValue;
+                          });
+                        },
+                        items: listProperty.map((valueItem) {
+                          return DropdownMenuItem(
+                            value: valueItem,
+                            child: Text(
+                              valueItem,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 3, vertical: 8),
+                  child: Container(
+                    height: 35,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF004225),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        padding: const EdgeInsets.all(5),
+                        hint: const Text(
+                          "Room Type",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        dropdownColor: Colors.grey,
+                        icon: const Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.white,
+                        ),
+                        iconSize: 20,
+                        isExpanded: true,
+                        value: selectedRoom,
+                        onChanged: (newValue) {
+                          setState(() {
+                            selectedRoom = newValue;
+                          });
+                        },
+                        items: listRoom.map((valueItem) {
+                          return DropdownMenuItem(
+                            value: valueItem,
+                            child: Text(
+                              valueItem,
+                              style: const TextStyle(
+                                  color:
+                                      Colors.white), // Set the color to white
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Feature Post',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[],
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          decoration: BoxDecoration(
+              color: const Color(0xFF004225),
+              borderRadius: BorderRadius.circular(30),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 10,
+                  spreadRadius: 2,
+                  offset: Offset(0, 5),
+                )
+              ]),
+          child: BottomNavigationBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            selectedItemColor: const Color.fromARGB(255, 255, 255, 255),
+            unselectedItemColor: const Color.fromARGB(238, 124, 168, 139),
+            currentIndex: _selectedIndex,
+            type: BottomNavigationBarType.fixed,
+            onTap: _onItemTapped,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.favorite),
+                label: 'Cart',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.add_circle),
+                label: 'Add',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.location_on),
+                label: 'Maps',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.account_circle_sharp),
+                label: 'Profile',
               ),
             ],
           ),
@@ -105,30 +301,185 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildFeatureChip(String label) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 2.5, vertical: 1.5),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color.fromARGB(255, 114, 110, 110)),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+            width: 0.8, color: const Color.fromARGB(213, 223, 223, 223)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           const Icon(
             Icons.check,
-            color: Color.fromARGB(255, 104, 181, 106),
+            color: Colors.green,
             size: 13,
           ),
-          const SizedBox(width: 5),
+          const SizedBox(width: 1),
           Text(
             label,
             style: const TextStyle(
-              color: Colors.black87,
-              fontSize: 8,
+              color: Colors.black,
+              fontSize: 8.5,
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _getPage(int index) {
+    switch (index) {
+      case 0:
+        return const Text("Home Page Content");
+      case 1:
+        return const SavedPage();
+      case 2:
+        return const AddPage();
+      case 3:
+        return const MapsPage();
+      case 4:
+        return const ProfilePage();
+      default:
+        return const Text("Home Page Content");
+    }
+  }
+}
+
+class RoomCard extends StatelessWidget {
+  const RoomCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        children: [
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Room",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  "Rs.6999 Monthly",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                SizedBox(height: 5),
+                Row(
+                  children: [
+                    _FeatureCheck(title: "Fully Furnished"),
+                    SizedBox(width: 5),
+                    _FeatureCheck(title: "Washing Machine"),
+                    SizedBox(width: 5),
+                    _FeatureCheck(title: "Attached Bathroom"),
+                  ],
+                ),
+                SizedBox(height: 5),
+                Row(
+                  children: [
+                    _FeatureCheck(title: "Near Mall/Supermarket"),
+                    SizedBox(width: 5),
+                    _FeatureCheck(title: "Internet/Wifi"),
+                  ],
+                ),
+                SizedBox(height: 5),
+                Row(
+                  children: [
+                    Icon(Icons.location_on),
+                    SizedBox(width: 8),
+                    Text("Location"),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 16),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.favorite_border),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FeatureCheck extends StatelessWidget {
+  final String title;
+
+  const _FeatureCheck({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 3.0),
+      decoration: BoxDecoration(
+        color: Colors.green.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.check, color: Colors.green, size: 13),
+          const SizedBox(width: 2),
+          Text(title, style: const TextStyle(fontSize: 8.5)),
+        ],
+      ),
+    );
+  }
+}
+
+class SavedPage extends StatelessWidget {
+  const SavedPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xFF004225),
+      child: const Center(child: Text('Cart')),
+    );
+  }
+}
+
+class AddPage extends StatelessWidget {
+  const AddPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xFF004225),
+      child: const Center(child: Text('Add')),
+    );
+  }
+}
+
+class MapsPage extends StatelessWidget {
+  const MapsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xFF004225),
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xFF004225),
     );
   }
 }
@@ -139,11 +490,10 @@ class VerifiedContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1.5),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!),
+        borderRadius: BorderRadius.circular(5),
       ),
       child: const Row(
         mainAxisSize: MainAxisSize.min,
@@ -151,15 +501,15 @@ class VerifiedContainer extends StatelessWidget {
           Icon(
             Icons.verified,
             color: Colors.blue,
-            size: 16,
+            size: 10,
           ),
-          SizedBox(width: 4),
+          SizedBox(width: 2),
           Text(
             'Verified',
             style: TextStyle(
               color: Colors.blue,
               fontWeight: FontWeight.bold,
-              fontSize: 12,
+              fontSize: 7.5,
             ),
           ),
         ],
@@ -170,6 +520,6 @@ class VerifiedContainer extends StatelessWidget {
 
 void main() {
   runApp(const MaterialApp(
-    home: MyHomePage(title: 'Villa Details'),
+    home: HomePage(title: 'Villa Details'),
   ));
 }
